@@ -11,8 +11,11 @@ Modules:
     - training: Training pipeline and optimization
     - evaluation: Metrics and visualization
 
-Author: M.Sc. Data Science Assignment
+Authors: Igor Nazarenko, Tom Ron, Roie Gilad
+Course: M.Sc. Data Science - LLMs and Multi-Agent Orchestration
+Instructor: Dr. Segal Yoram
 Date: November 2025
 """
 
 __version__ = '1.0.0'
+__authors__ = ['Igor Nazarenko', 'Tom Ron', 'Roie Gilad']

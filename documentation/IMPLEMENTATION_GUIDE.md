@@ -3,6 +3,7 @@
 
 **Version:** 1.0
 **Date:** November 2025
+**Authors:** Igor Nazarenko, Tom Ron, Roie Gilad
 **Audience:** Developers, Students, Researchers
 
 ---

@@ -3,7 +3,8 @@
 
 **Document Version:** 1.0
 **Date:** November 2025
-**Author:** Dr. Segal Yoram
+**Assignment by:** Dr. Segal Yoram
+**Implementation by:** Igor Nazarenko, Tom Ron, Roie Gilad
 **Course:** M.Sc. Data Science - LLMs and Multi-Agent Orchestration
 
 ---

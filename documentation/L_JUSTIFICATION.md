@@ -2,6 +2,7 @@
 
 **Document Version:** 1.0
 **Date:** November 2025
+**Authors:** Igor Nazarenko, Tom Ron, Roie Gilad
 **Model:** SequenceLSTM with L=10
 
 ---

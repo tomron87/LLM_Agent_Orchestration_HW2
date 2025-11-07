@@ -2,6 +2,8 @@
 
 **M.Sc. Data Science Assignment - November 2025**
 
+**Authors:** Igor Nazarenko, Tom Ron, Roie Gilad
+
 A PyTorch implementation of a Long Short-Term Memory (LSTM) neural network system that extracts individual pure frequency components from noisy mixed signals through conditional regression.
 
 ---
@@ -545,16 +547,18 @@ For questions about this implementation:
 
 This project is for educational purposes as part of the M.Sc. Data Science coursework.
 
-**© Dr. Segal Yoram - All Rights Reserved**
+**Implementation by:** Igor Nazarenko, Tom Ron, Roie Gilad
 
 ---
 
 ## 🙏 Acknowledgments
 
 - **Course:** LLMs and Multi-Agent Orchestration
+- **Instructor:** Dr. Segal Yoram
 - **Institution:** M.Sc. Data Science Program
 - **Date:** November 2025
 - **Assignment:** Homework 2 - LSTM Frequency Extraction
+- **Authors:** Igor Nazarenko, Tom Ron, Roie Gilad
 
 ---
 
