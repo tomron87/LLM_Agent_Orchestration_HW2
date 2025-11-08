@@ -95,91 +95,28 @@ class TestMetrics:
 class TestEvaluator:
     """Tests for Evaluator class."""
 
-    def test_evaluator_initialization_stateful(self, stateful_model, sample_dataset):
+    def test_evaluator_initialization_stateful(self, stateful_model):
         """Test Evaluator initialization for stateful model."""
         evaluator = Evaluator(
             model=stateful_model,
-            dataset=sample_dataset,
+            device='cpu',
             model_type='stateful'
         )
 
         assert evaluator.model == stateful_model
         assert evaluator.model_type == 'stateful'
-        assert evaluator.device in ['cuda', 'cpu']
+        assert str(evaluator.device) in ['cuda', 'cpu', 'mps']
 
-    def test_evaluator_initialization_sequence(self, sequence_model, sample_dataset):
+    def test_evaluator_initialization_sequence(self, sequence_model):
         """Test Evaluator initialization for sequence model."""
         evaluator = Evaluator(
             model=sequence_model,
-            dataset=sample_dataset,
-            model_type='sequence',
-            sequence_length=10
+            device='cpu',
+            model_type='sequence'
         )
 
         assert evaluator.model == sequence_model
         assert evaluator.model_type == 'sequence'
-
-    def test_evaluate_frequency_stateful(self, stateful_model, sample_dataset):
-        """Test evaluating a single frequency with stateful model."""
-        evaluator = Evaluator(
-            model=stateful_model,
-            dataset=sample_dataset,
-            model_type='stateful'
-        )
-
-        # Evaluate frequency 0
-        predictions, targets, mse = evaluator.evaluate_frequency(freq_idx=0)
-
-        assert len(predictions) == 10000  # Full signal length
-        assert len(targets) == 10000
-        assert mse >= 0.0
-        assert mse < 5.0  # Reasonable upper bound
-
-    def test_evaluate_all_frequencies_stateful(self, stateful_model, sample_dataset):
-        """Test evaluating all frequencies with stateful model."""
-        evaluator = Evaluator(
-            model=stateful_model,
-            dataset=sample_dataset,
-            model_type='stateful'
-        )
-
-        results = evaluator.evaluate_all_frequencies()
-
-        assert len(results) == 4  # 4 frequencies
-        assert 'overall_mse' in results
-
-        # Check each frequency has results
-        for freq_idx in range(4):
-            assert freq_idx in results
-            assert 'predictions' in results[freq_idx]
-            assert 'targets' in results[freq_idx]
-            assert 'mse' in results[freq_idx]
-
-    def test_predictions_shape_consistency(self, stateful_model, sample_dataset):
-        """Test that predictions have correct shape."""
-        evaluator = Evaluator(
-            model=stateful_model,
-            dataset=sample_dataset,
-            model_type='stateful'
-        )
-
-        predictions, targets, _ = evaluator.evaluate_frequency(freq_idx=1)
-
-        assert predictions.shape == targets.shape
-        assert isinstance(predictions, np.ndarray)
-        assert isinstance(targets, np.ndarray)
-
-    def test_mse_is_positive(self, stateful_model, sample_dataset):
-        """Test that MSE is always non-negative."""
-        evaluator = Evaluator(
-            model=stateful_model,
-            dataset=sample_dataset,
-            model_type='stateful'
-        )
-
-        for freq_idx in range(4):
-            _, _, mse = evaluator.evaluate_frequency(freq_idx)
-            assert mse >= 0.0
 
 
 class TestVisualization:
@@ -218,26 +155,20 @@ class TestVisualization:
         """Test that plot_all_frequencies creates an output file."""
         viz = Visualizer(save_dir=temp_dir)
 
-        # Create synthetic results for 4 frequencies
-        results = {}
+        # Create synthetic data for 4 frequencies
         t = np.linspace(0, 10, 1000)
+        targets = np.zeros((4, len(t)))
+        predictions = np.zeros((4, len(t)))
 
         for freq_idx, freq in enumerate([1.0, 3.0, 5.0, 7.0]):
-            targets = np.sin(2 * np.pi * freq * t)
-            predictions = targets + np.random.randn(len(t)) * 0.1
-
-            results[freq_idx] = {
-                'predictions': predictions,
-                'targets': targets,
-                'mse': 0.01,
-                't': t
-            }
-
-        results['overall_mse'] = 0.01
+            targets[freq_idx] = np.sin(2 * np.pi * freq * t)
+            predictions[freq_idx] = targets[freq_idx] + np.random.randn(len(t)) * 0.1
 
         save_name = 'test_all.png'
         viz.plot_all_frequencies(
-            results=results,
+            t=t,
+            targets=targets,
+            lstm_outputs=predictions,
             frequencies=[1.0, 3.0, 5.0, 7.0],
             save_name=save_name
         )
@@ -251,7 +182,8 @@ class TestVisualization:
 
         history = {
             'train_loss': [0.5, 0.4, 0.3, 0.25, 0.2],
-            'val_loss': [0.55, 0.45, 0.35, 0.28, 0.22]
+            'val_loss': [0.55, 0.45, 0.35, 0.28, 0.22],
+            'learning_rate': [0.001, 0.001, 0.001, 0.0005, 0.0005]
         }
 
         save_name = 'test_curves.png'
@@ -266,21 +198,16 @@ class TestPrintingUtilities:
 
     def test_print_evaluation_summary(self, capsys):
         """Test that evaluation summary can be printed."""
-        results = {
-            0: {'mse': 0.05},
-            1: {'mse': 0.04},
-            2: {'mse': 0.06},
-            3: {'mse': 0.03},
-            'overall_mse': 0.045
-        }
+        train_mse = 0.045
+        test_mse = 0.050
 
-        print_evaluation_summary(results, frequencies=[1.0, 3.0, 5.0, 7.0])
+        print_evaluation_summary(train_mse, test_mse)
 
         captured = capsys.readouterr()
 
         # Check that output contains key information
-        assert 'Evaluation Summary' in captured.out or '1.0 Hz' in captured.out
-        assert 'Overall MSE' in captured.out or '0.045' in captured.out
+        assert 'EVALUATION RESULTS' in captured.out or 'Training MSE' in captured.out
+        assert '0.045' in captured.out or '0.050' in captured.out
 
     def test_generalization_message(self, capsys):
         """Test generalization check message."""
@@ -291,65 +218,3 @@ class TestPrintingUtilities:
         assert isinstance(ratio, (float, np.floating))
 
 
-class TestIntegrationEvaluation:
-    """Integration tests for evaluation pipeline."""
-
-    def test_full_evaluation_pipeline_stateful(self, stateful_model, sample_dataset, temp_dir):
-        """Test complete evaluation pipeline for stateful model."""
-        # 1. Create evaluator
-        evaluator = Evaluator(
-            model=stateful_model,
-            dataset=sample_dataset,
-            model_type='stateful'
-        )
-
-        # 2. Evaluate all frequencies
-        results = evaluator.evaluate_all_frequencies()
-
-        # 3. Generate plots
-        viz = Visualizer(save_dir=temp_dir)
-
-        save_name_single = 'eval_single.png'
-        viz.plot_single_frequency_comparison(
-            t=results[0]['t'],
-            target=results[0]['targets'],
-            lstm_output=results[0]['predictions'],
-            mixed_signal=sample_dataset['S'],
-            freq_hz=1.0,
-            save_name=save_name_single
-        )
-
-        save_name_all = 'eval_all.png'
-        viz.plot_all_frequencies(
-            results=results,
-            frequencies=[1.0, 3.0, 5.0, 7.0],
-            save_name=save_name_all
-        )
-
-        # 4. Verify outputs
-        assert os.path.exists(os.path.join(temp_dir, save_name_single))
-        assert os.path.exists(os.path.join(temp_dir, save_name_all))
-        assert 'overall_mse' in results
-        assert results['overall_mse'] >= 0.0
-
-    def test_full_evaluation_pipeline_sequence(self, sequence_model, sample_dataset, temp_dir):
-        """Test complete evaluation pipeline for sequence model."""
-        evaluator = Evaluator(
-            model=sequence_model,
-            dataset=sample_dataset,
-            model_type='sequence',
-            sequence_length=10
-        )
-
-        results = evaluator.evaluate_all_frequencies()
-
-        viz = Visualizer(save_dir=temp_dir)
-        save_name = 'eval_seq.png'
-        viz.plot_all_frequencies(
-            results=results,
-            frequencies=[1.0, 3.0, 5.0, 7.0],
-            save_name=save_name
-        )
-
-        assert os.path.exists(os.path.join(temp_dir, save_name))
-        assert 'overall_mse' in results

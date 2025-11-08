@@ -23,13 +23,19 @@ def compute_mse(
     Compute Mean Squared Error.
 
     Args:
-        predictions: Model predictions
-        targets: Ground truth values
+        predictions: Model predictions (numpy array or torch tensor)
+        targets: Ground truth values (numpy array or torch tensor)
 
     Returns:
         mse: Mean squared error
     """
-    return np.mean((predictions - targets) ** 2)
+    # Convert torch tensors to numpy if needed
+    if torch.is_tensor(predictions):
+        predictions = predictions.detach().cpu().numpy()
+    if torch.is_tensor(targets):
+        targets = targets.detach().cpu().numpy()
+
+    return float(np.mean((predictions - targets) ** 2))
 
 
 def check_generalization(
