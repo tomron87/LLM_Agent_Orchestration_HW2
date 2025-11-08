@@ -183,10 +183,12 @@ class StatefulLSTM(nn.Module):
             (self.hidden_state, self.cell_state)
         )
 
-        # Update internal state (detach to prevent backprop through time)
+        # Update internal state
         # CRITICAL: This preserves state for next forward pass!
-        self.hidden_state = h_new.detach()
-        self.cell_state = c_new.detach()
+        # During training, we want gradients to flow through the state
+        # During eval, detaching happens implicitly with torch.no_grad()
+        self.hidden_state = h_new
+        self.cell_state = c_new
 
         # Apply output layer to last (only) timestep
         # lstm_out[:, -1, :] extracts last timestep: (batch, hidden_size)

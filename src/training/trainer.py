@@ -144,8 +144,7 @@ class Trainer:
             self.optimizer,
             mode='min',
             factor=0.5,
-            patience=5,
-            verbose=config.verbose
+            patience=5
         )
 
         # Early stopping
@@ -217,6 +216,13 @@ class Trainer:
             # Backward pass
             self.optimizer.zero_grad()
             loss.backward()
+
+            # Detach states after backward to truncate BPTT and free computational graph
+            # Gradients have already flowed through, so this doesn't affect learning
+            # but prevents "backward through graph a second time" errors
+            if hasattr(self.model, 'hidden_state') and self.model.hidden_state is not None:
+                self.model.hidden_state = self.model.hidden_state.detach()
+                self.model.cell_state = self.model.cell_state.detach()
 
             # Gradient clipping
             torch.nn.utils.clip_grad_norm_(

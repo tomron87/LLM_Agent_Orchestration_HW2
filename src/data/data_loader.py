@@ -82,13 +82,15 @@ def create_train_val_loaders(
     model_type: str = 'stateful',
     sequence_length: int = 1,
     num_workers: int = 0,
-    seed: int = 42
+    seed: int = 42,
+    interleave_frequencies: bool = True,
+    chunk_size: int = 200
 ) -> Tuple[DataLoader, DataLoader]:
     """
     Create training and validation DataLoaders with stratified split.
 
-    For L=1 stateful model, the split is done per frequency to maintain
-    temporal continuity within each frequency sequence.
+    For L=1 stateful model, frequencies can be interleaved in chunks to help
+    the model learn to use the one-hot selector effectively.
 
     Args:
         dataset_dict: Dataset dictionary from SignalGenerator
@@ -98,6 +100,8 @@ def create_train_val_loaders(
         sequence_length: Sequence length for L>1 model
         num_workers: Number of worker processes
         seed: Random seed for split reproducibility
+        interleave_frequencies: If True, interleave frequencies in chunks (helps multi-task learning)
+        chunk_size: Samples per frequency before switching (only if interleave_frequencies=True)
 
     Returns:
         train_loader: Training DataLoader
@@ -113,22 +117,47 @@ def create_train_val_loaders(
         num_train_per_freq = num_samples_per_freq - num_val_per_freq
 
         # Create indices for train and val
-        # Important: Keep temporal order within each frequency
         train_indices = []
         val_indices = []
 
         rng = np.random.RandomState(seed)
 
-        for freq_idx in range(num_frequencies):
-            freq_offset = freq_idx * num_samples_per_freq
+        if interleave_frequencies:
+            # INTERLEAVED: Alternate between frequencies in chunks
+            # This helps the model learn to use the one-hot selector C
+            num_chunks = (num_train_per_freq + chunk_size - 1) // chunk_size
 
-            # Use last val_split fraction for validation to maintain temporal order
-            train_idx = list(range(freq_offset, freq_offset + num_train_per_freq))
-            val_idx = list(range(freq_offset + num_train_per_freq,
-                                 freq_offset + num_samples_per_freq))
+            for chunk_idx in range(num_chunks):
+                for freq_idx in range(num_frequencies):
+                    freq_offset = freq_idx * num_samples_per_freq
+                    chunk_start = chunk_idx * chunk_size
+                    chunk_end = min((chunk_idx + 1) * chunk_size, num_train_per_freq)
 
-            train_indices.extend(train_idx)
-            val_indices.extend(val_idx)
+                    if chunk_start < num_train_per_freq:
+                        chunk_indices = list(range(
+                            freq_offset + chunk_start,
+                            freq_offset + chunk_end
+                        ))
+                        train_indices.extend(chunk_indices)
+
+            # Validation: use last samples from each frequency
+            for freq_idx in range(num_frequencies):
+                freq_offset = freq_idx * num_samples_per_freq
+                val_idx = list(range(freq_offset + num_train_per_freq,
+                                     freq_offset + num_samples_per_freq))
+                val_indices.extend(val_idx)
+        else:
+            # BLOCK: Original approach - all samples of freq-0, then freq-1, etc.
+            for freq_idx in range(num_frequencies):
+                freq_offset = freq_idx * num_samples_per_freq
+
+                # Use last val_split fraction for validation to maintain temporal order
+                train_idx = list(range(freq_offset, freq_offset + num_train_per_freq))
+                val_idx = list(range(freq_offset + num_train_per_freq,
+                                     freq_offset + num_samples_per_freq))
+
+                train_indices.extend(train_idx)
+                val_indices.extend(val_idx)
 
         # Create subset datasets
         train_dataset = Subset(dataset, train_indices)
