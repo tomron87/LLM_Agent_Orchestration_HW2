@@ -278,6 +278,15 @@ HW2/
 ├── notebooks/                        # Jupyter notebooks
 │   └── demo.ipynb                   # Interactive demonstration
 │
+├── tests/                            # Pytest test suite
+│   ├── __init__.py                  # Test suite initialization
+│   ├── conftest.py                  # Pytest fixtures
+│   ├── test_data.py                 # Data module tests
+│   ├── test_models.py               # Model tests
+│   ├── test_training.py             # Training tests
+│   ├── test_evaluation.py           # Evaluation tests
+│   └── test_integration.py          # Integration tests
+│
 ├── outputs/                          # Generated outputs
 │   ├── models/                      # Saved model checkpoints
 │   ├── figures/                     # Generated plots
@@ -401,9 +410,35 @@ for t in range(num_samples):
 
 ## 🧪 Testing
 
+### Pytest Test Suite
+
+The project includes a comprehensive pytest test suite with 78 tests covering all modules:
+
+```bash
+# Run all tests
+pytest tests/ -v
+
+# Run specific test modules
+pytest tests/test_data.py -v
+pytest tests/test_models.py -v
+pytest tests/test_training.py -v
+pytest tests/test_evaluation.py -v
+pytest tests/test_integration.py -v
+
+# Run with coverage report
+pytest tests/ --cov=src --cov-report=html
+```
+
+**Test Coverage:**
+- **Data Module Tests** (18 tests): Signal generation, datasets, data loaders
+- **Model Tests** (24 tests): StatefulLSTM, SequenceLSTM, state management
+- **Training Tests** (12 tests): Training pipeline, checkpoints, early stopping
+- **Evaluation Tests** (14 tests): Metrics, visualizations, evaluation pipeline
+- **Integration Tests** (10 tests): End-to-end pipelines, model comparisons
+
 ### Unit Tests
 
-Test individual modules:
+Test individual modules directly:
 
 ```bash
 # Test data generation

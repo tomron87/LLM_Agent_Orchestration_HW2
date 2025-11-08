@@ -155,4 +155,124 @@ Based on the PDF (L2-homework.pdf), here are the critical requirements:
 
 ---
 
+## Prompt 5
+**Timestamp:** 2025-11-07
+**Type:** Background Task Management
+
+### Prompt Text:
+```
+please wait for it to conclude
+```
+
+### Response Summary:
+User asked to wait for background test to finish. Test was running in background.
+
+---
+
+## Prompt 6
+**Timestamp:** 2025-11-07
+**Type:** Task Management
+
+### Prompt Text:
+```
+move on, let the task run in the background
+```
+
+### Response Summary:
+User instructed to continue with other tasks while background test runs.
+
+---
+
+## Prompt 7
+**Timestamp:** 2025-11-07
+**Type:** Git Repository Setup
+
+### Prompt Text:
+```
+commit and push to https://github.com/tomron87/LLM_Agent_Orchestration_HW2.git
+```
+
+### Response Summary:
+- Initialized Git repository
+- Committed all project files (24 files, 7211+ lines)
+- Added remote and pushed to GitHub repository
+- Successfully uploaded complete project
+
+---
+
+## Prompt 8
+**Timestamp:** 2025-11-07
+**Type:** Author Attribution Update
+
+### Prompt Text:
+```
+update writers to Igor Nazarenko, Tom Ron, and Roie Gilad - make sure to update in @README.md and all other references
+```
+
+### Response Summary:
+Updated author attribution across all files:
+- README.md (top and acknowledgments)
+- All documentation files (PRD, Technical Spec, Implementation Guide, L_JUSTIFICATION)
+- src/__init__.py
+- tests/__init__.py
+- Updated to properly credit Dr. Segal Yoram as instructor/assignment creator
+- Committed and pushed changes to GitHub
+
+---
+
+## Prompt 9
+**Timestamp:** 2025-11-07
+**Type:** Testing Infrastructure Question
+
+### Prompt Text:
+```
+does the project include test modules?
+```
+
+### Response Summary:
+Explained that project has module-level tests (`if __name__ == '__main__'` blocks) but no formal pytest test suite. Offered to create comprehensive pytest test suite with:
+- Unit tests for each module
+- Integration tests
+- Fixtures and configuration
+- Proper test organization
+
+---
+
+## Prompt 10
+**Timestamp:** 2025-11-07
+**Type:** Test Suite Request
+
+### Prompt Text:
+```
+yes please
+```
+
+### Response Summary:
+Created formal pytest test suite:
+- `tests/__init__.py` - Test suite initialization
+- `tests/conftest.py` - Pytest fixtures (signal_generator, models, datasets, configs)
+- `tests/test_data.py` - Comprehensive data module tests (18 tests)
+- `tests/test_models.py` - Model architecture tests (24 tests)
+- `tests/test_training.py` - Training pipeline tests (12 tests)
+- `tests/test_evaluation.py` - Evaluation and visualization tests (14 tests)
+- `tests/test_integration.py` - End-to-end integration tests (10 tests)
+
+Total: 78 comprehensive tests covering all modules
+
+---
+
+## Prompt 11
+**Timestamp:** 2025-11-07
+**Type:** Documentation Update Check
+
+### Prompt Text:
+```
+Before committing, did you update @prompts.md and @README.md with everything new?
+```
+
+### Response Summary:
+User reminded to update documentation before committing test suite changes. Updating both files now.
+
+---
+
 *This document will be updated with any additional prompts during the development session.*
