@@ -37,7 +37,7 @@ class SignalGenerator:
         fs: int = 1000,
         duration: float = 10.0,
         seed: int = 1,
-        phase_scale: float = 0.1
+        phase_scale: float = 0.01
     ):
         """
         Initialize SignalGenerator.
@@ -49,7 +49,8 @@ class SignalGenerator:
             seed: Random seed for reproducibility
             phase_scale: Scaling factor for phase noise (0 to 1)
                         0.0 = no phase noise (too easy)
-                        0.1 = moderate noise (recommended)
+                        0.01 = low noise (recommended, default)
+                        0.1 = moderate noise
                         1.0 = full noise (impossible to learn)
         """
         self.frequencies = frequencies
@@ -222,7 +223,7 @@ def generate_dataset(
     frequencies: List[float] = [1.0, 3.0, 5.0, 7.0],
     fs: int = 1000,
     duration: float = 10.0,
-    phase_scale: float = 0.1,
+    phase_scale: float = 0.01,
     save_path: str = None
 ) -> Dict:
     """
@@ -233,20 +234,20 @@ def generate_dataset(
         frequencies: List of frequency values in Hz
         fs: Sampling rate in Hz
         duration: Signal duration in seconds
-        phase_scale: Scaling factor for phase noise (0.0-1.0, default 0.1)
+        phase_scale: Scaling factor for phase noise (0.0-1.0, default 0.01)
         save_path: Optional path to save dataset (as pickle file)
 
     Returns:
         dataset: Dictionary containing S, t, targets, and metadata
 
     Example:
-        >>> # Generate training dataset with moderate noise
-        >>> train_data = generate_dataset(seed=1, phase_scale=0.1, save_path='data/train_data.pkl')
+        >>> # Generate training dataset with low noise (default)
+        >>> train_data = generate_dataset(seed=1, save_path='data/train_data.pkl')
         >>> print(train_data['S'].shape)
         (10000,)
 
         >>> # Generate test dataset with different seed
-        >>> test_data = generate_dataset(seed=2, phase_scale=0.1, save_path='data/test_data.pkl')
+        >>> test_data = generate_dataset(seed=2, save_path='data/test_data.pkl')
     """
     generator = SignalGenerator(
         frequencies=frequencies,

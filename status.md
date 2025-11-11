@@ -88,6 +88,27 @@ phase_scale = 0.01  # Proposed (much cleaner)
 
 ## Recent Changes Log
 
+### 2025-11-11 21:10 - Changed Default phase_scale to 0.01
+**Files Modified:**
+- `src/data/signal_generator.py` (lines 40, 52-53, 225, 237, 244)
+
+**Change:** Updated default phase_scale from 0.1 to 0.01
+- `SignalGenerator.__init__()`: phase_scale=0.01 (was 0.1)
+- `generate_dataset()`: phase_scale=0.01 (was 0.1)
+- Updated docstrings to reflect 0.01 as recommended default
+
+**Rationale:**
+- phase_scale=0.1 gave MSE ~0.30 (acceptable but not great)
+- phase_scale=0.01 gives MSE ~0.11 (much better)
+- Cleaner frequency extraction, especially for 3 Hz
+- Phase noise range: 0° to 3.6° instead of 0° to 36°
+
+**Impact:** All new data generation will use lower noise by default
+
+**Status:** ✅ Complete - Better default for good results out-of-the-box
+
+---
+
 ### 2025-11-11 21:05 - Fixed MPS GPU Auto-Detection
 **Files Modified:**
 - `src/training/config.py` (lines 83-87)
