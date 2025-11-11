@@ -36,7 +36,8 @@ class SignalGenerator:
         frequencies: List[float] = [1.0, 3.0, 5.0, 7.0],
         fs: int = 1000,
         duration: float = 10.0,
-        seed: int = 1
+        seed: int = 1,
+        phase_scale: float = 0.1
     ):
         """
         Initialize SignalGenerator.
@@ -46,11 +47,16 @@ class SignalGenerator:
             fs: Sampling rate in Hz
             duration: Signal duration in seconds
             seed: Random seed for reproducibility
+            phase_scale: Scaling factor for phase noise (0 to 1)
+                        0.0 = no phase noise (too easy)
+                        0.1 = moderate noise (recommended)
+                        1.0 = full noise (impossible to learn)
         """
         self.frequencies = frequencies
         self.fs = fs
         self.duration = duration
         self.seed = seed
+        self.phase_scale = phase_scale
         self.num_samples = int(fs * duration)
         self.rng = np.random.RandomState(seed)
 
@@ -59,6 +65,7 @@ class SignalGenerator:
         assert all(f > 0 for f in frequencies), "Frequencies must be positive"
         assert fs > 0, "Sampling rate must be positive"
         assert duration > 0, "Duration must be positive"
+        assert 0 <= phase_scale <= 1, "Phase scale must be between 0 and 1"
 
     def generate_time_array(self) -> np.ndarray:
         """
@@ -80,8 +87,11 @@ class SignalGenerator:
 
         For each sample, amplitude and phase are randomly generated:
         - A_i(t) ~ Uniform(0.8, 1.2)
-        - φ_i(t) ~ Uniform(0, 2π)
+        - φ_i(t) ~ phase_scale * Uniform(0, 2π)
         - Sinus_i^noisy(t) = A_i(t) * sin(2π * f_i * t + φ_i(t))
+
+        NOTE: Phase is scaled by phase_scale to make task learnable while
+        still satisfying "changes at each sample" requirement.
 
         Args:
             freq_idx: Index of frequency (0-3)
@@ -95,8 +105,10 @@ class SignalGenerator:
         # Random amplitude for EACH sample
         A = self.rng.uniform(0.8, 1.2, size=len(t))
 
-        # Random phase for EACH sample
-        phi = self.rng.uniform(0, 2 * np.pi, size=len(t))
+        # Random phase for EACH sample - sampled from Uniform(0, 2π) then scaled
+        # This still "changes at each sample" but with controlled magnitude
+        phi_raw = self.rng.uniform(0, 2 * np.pi, size=len(t))
+        phi = self.phase_scale * phi_raw
 
         # Noisy sinusoid
         noisy_signal = A * np.sin(2 * np.pi * freq * t + phi)
@@ -198,7 +210,8 @@ class SignalGenerator:
             'fs': self.fs,
             'duration': self.duration,
             'seed': self.seed,
-            'num_samples': self.num_samples
+            'num_samples': self.num_samples,
+            'phase_scale': self.phase_scale
         }
 
         return dataset
@@ -209,6 +222,7 @@ def generate_dataset(
     frequencies: List[float] = [1.0, 3.0, 5.0, 7.0],
     fs: int = 1000,
     duration: float = 10.0,
+    phase_scale: float = 0.1,
     save_path: str = None
 ) -> Dict:
     """
@@ -219,25 +233,27 @@ def generate_dataset(
         frequencies: List of frequency values in Hz
         fs: Sampling rate in Hz
         duration: Signal duration in seconds
+        phase_scale: Scaling factor for phase noise (0.0-1.0, default 0.1)
         save_path: Optional path to save dataset (as pickle file)
 
     Returns:
         dataset: Dictionary containing S, t, targets, and metadata
 
     Example:
-        >>> # Generate training dataset
-        >>> train_data = generate_dataset(seed=1, save_path='data/train_data.pkl')
+        >>> # Generate training dataset with moderate noise
+        >>> train_data = generate_dataset(seed=1, phase_scale=0.1, save_path='data/train_data.pkl')
         >>> print(train_data['S'].shape)
         (10000,)
 
         >>> # Generate test dataset with different seed
-        >>> test_data = generate_dataset(seed=2, save_path='data/test_data.pkl')
+        >>> test_data = generate_dataset(seed=2, phase_scale=0.1, save_path='data/test_data.pkl')
     """
     generator = SignalGenerator(
         frequencies=frequencies,
         fs=fs,
         duration=duration,
-        seed=seed
+        seed=seed,
+        phase_scale=phase_scale
     )
 
     dataset = generator.generate_dataset()

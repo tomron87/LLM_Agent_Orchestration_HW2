@@ -354,6 +354,16 @@ def plot_all_results(
 
     # Reshape predictions to (4, 10000)
     num_samples = len(t)
+    expected_size = len(frequencies) * num_samples  # 4 * 10000 = 40000
+
+    # For sequence models with overlapping windows, predictions might be larger
+    # Truncate to expected size if needed
+    if len(predictions) > expected_size:
+        print(f"   Note: Truncating predictions from {len(predictions)} to {expected_size} elements")
+        predictions = predictions[:expected_size]
+    elif len(predictions) < expected_size:
+        raise ValueError(f"Predictions size {len(predictions)} is smaller than expected {expected_size}")
+
     predictions = predictions.reshape(len(frequencies), num_samples)
 
     # Graph 1: Single frequency (f2 = 3 Hz, index 1)

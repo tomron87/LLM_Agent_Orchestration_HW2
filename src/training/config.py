@@ -80,7 +80,11 @@ class TrainingConfig:
     checkpoint_dir: str = 'outputs/models'
 
     # Device and logging
-    device: str = field(default_factory=lambda: 'cuda' if torch.cuda.is_available() else 'cpu')
+    device: str = field(default_factory=lambda: (
+        'cuda' if torch.cuda.is_available() else
+        'mps' if torch.backends.mps.is_available() else
+        'cpu'
+    ))
     verbose: bool = True
     log_interval: int = 100  # Print every N batches
 
