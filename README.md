@@ -182,6 +182,75 @@ All figures are available in `outputs/figures/`:
 | Training | No convergence | Smooth convergence | ✅ |
 | Quality | Random noise | Clean extraction | ✅ |
 
+### Model Configuration Comparison
+
+Experiments with different sequence lengths demonstrate the importance of hyperparameter optimization:
+
+#### Configuration 1: L=50 (Optimal - Recommended)
+```bash
+python main.py --model sequence --sequence-length 50 --hidden-size 128 \
+  --num-layers 2 --lr 0.01 --epochs 30 --batch-size 16 --dropout 0.2
+```
+
+**Results:**
+- Training MSE: **0.052**
+- Test MSE: **0.062**
+- **Generalization Ratio: 1.19** ✅ (Excellent)
+- Correlation (1Hz): 0.934, (3Hz): 0.921, (5Hz): 0.897, (7Hz): 0.856
+- **Status: Excellent generalization, all frequencies extracted well**
+
+#### Configuration 2: L=100 (Overfitting)
+```bash
+python main.py --model sequence --sequence-length 100 --hidden-size 128 \
+  --num-layers 2 --lr 0.01 --epochs 30 --batch-size 16 --dropout 0.2
+```
+
+**Results:**
+```
+============================================================
+                    EVALUATION RESULTS
+============================================================
+
+Overall Performance:
+  Training MSE:   0.049285
+  Test MSE:       0.169269
+
+Generalization Check:
+  Test/Train Ratio: 3.4345
+  Generalizes Well: ✗ NO
+
+Per-Frequency Performance:
+Freq     Hz       Train MSE    Test MSE     Correlation
+------------------------------------------------------------
+1        1        0.048992     0.032483     0.9675
+2        3        0.049923     0.277997     0.6879
+3        5        0.049968     0.235215     0.7409
+4        7        0.048256     0.131382     0.8604
+============================================================
+```
+
+**Analysis:**
+- Training MSE: 0.049 (slightly better than L=50)
+- Test MSE: 0.169 (2.7x worse than L=50)
+- **Generalization Ratio: 3.43** ❌ (Poor - indicates overfitting)
+- **Status: Model overfits to training data, poor test performance**
+
+![Evaluation Comparison](outputs/figures/Evaluation%20Results.png)
+
+*Figure 7: Evaluation results comparison showing the impact of sequence length on generalization.*
+
+#### Key Findings
+
+| Configuration | Train MSE | Test MSE | Gen. Ratio | Status |
+|--------------|-----------|----------|------------|--------|
+| **L=50** ⭐ | 0.052 | **0.062** | **1.19** | ✅ Excellent |
+| L=100 | 0.049 | 0.169 | 3.43 | ❌ Overfits |
+
+**Conclusion:** L=50 provides the optimal balance between model capacity and generalization. Longer sequences (L=100) lead to overfitting despite achieving lower training error. This demonstrates the importance of:
+1. **Hyperparameter tuning**: Not always "bigger is better"
+2. **Generalization monitoring**: Test/train ratio is critical
+3. **Early stopping**: Prevents overfitting to training patterns
+
 ---
 
 ## 📁 Project Structure
@@ -766,12 +835,20 @@ The `notebooks/demo.ipynb` provides interactive analysis:
 2. **Architecture Comparison**
    - L=1 (stateful): Better for streaming, lower memory
    - L>1 (sequence): Better performance, temporal context
-   - L=50: Best results in our experiments
+   - **L=50: Optimal sequence length** (MSE 0.062, gen ratio 1.19)
+   - L=100: Overfits despite lower training error (MSE 0.169, gen ratio 3.43)
 
-3. **Training Insights**
+3. **Hyperparameter Optimization Insights**
+   - **Bigger is not always better**: L=100 achieves lower training MSE (0.049) but worse test MSE (0.169)
+   - **Generalization ratio is key**: Ratio > 2.0 indicates overfitting
+   - **Sweet spot at L=50**: Balance between temporal context and generalization
+   - See [Model Configuration Comparison](#model-configuration-comparison) for detailed analysis
+
+4. **Training Insights**
    - Early stopping essential (prevents overfitting)
    - Learning rate scheduling improves convergence
    - Gradient clipping stabilizes training
+   - Monitor test/train ratio throughout training
 
 See [Development Journey](documentation/DEVELOPMENT_JOURNEY.md) for complete analysis.
 
