@@ -199,7 +199,7 @@ def train_pipeline(args):
         val_split=args.val_split,
         patience=args.patience,
         checkpoint_dir=f"{args.output_dir}/models",
-        device=args.device if args.device else ('cuda' if torch.cuda.is_available() else 'cpu'),
+        device=args.device if args.device else ('mps' if torch.backends.mps.is_available() else 'cuda' if torch.cuda.is_available() else 'cpu'),
         seed=args.seed
     )
 

@@ -68,7 +68,7 @@ reproducibility:
 # Device Settings
 device:
   auto_detect: true                   # Automatically detect GPU/MPS
-  preferred: "cuda"                   # "cuda", "mps", or "cpu"
+  preferred: "mps"                   # "cuda", "mps", or "cpu"
   allow_fallback: true                # Fall back to CPU if preferred unavailable
 
 # Performance
