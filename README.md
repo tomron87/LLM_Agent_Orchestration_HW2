@@ -172,10 +172,6 @@ All figures are available in `outputs/figures/`:
 
 *Figure 5: Statistical distribution of prediction errors across all frequencies.*
 
-![Results Summary](outputs/figures/Evaluation%20Results.png)
-
-*Figure 6: Comprehensive results summary with metrics and visualizations.*
-
 ### Comparison: Before vs. After Phase Scaling
 
 | Metric | Before (phase_scale=1.0) | After (phase_scale=0.01) | Improvement |
@@ -238,9 +234,9 @@ Freq     Hz       Train MSE    Test MSE     Correlation
 - **Generalization Ratio: 3.43** ❌ (Poor - indicates overfitting)
 - **Status: Model overfits to training data, poor test performance**
 
-![Evaluation Comparison](outputs/figures/Evaluation%20Results.png)
+![L=100 Evaluation Results](outputs/figures/Evaluation%20Results.png)
 
-*Figure 7: Evaluation results comparison showing the impact of sequence length on generalization.*
+*Figure 6: Complete evaluation results for L=100 configuration showing overfitting (Test/Train ratio: 3.43).*
 
 #### Key Findings
 
