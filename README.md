@@ -172,7 +172,7 @@ All figures are available in `outputs/figures/`:
 
 *Figure 5: Statistical distribution of prediction errors across all frequencies.*
 
-![Results Summary](outputs/figures/Results.png)
+![Results Summary](outputs/figures/Evaluation%20Results.png)
 
 *Figure 6: Comprehensive results summary with metrics and visualizations.*
 
