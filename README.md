@@ -3,8 +3,11 @@
 **M.Sc. Data Science Assignment - November 2025**
 
 **Course:** LLMs and Multi-Agent Orchestration
+
 **Instructor:** Dr. Segal Yoram
+
 **Authors:** Igor Nazarenko, Tom Ron, Roie Gilad
+
 **Assignment:** Homework 2 - LSTM Frequency Extraction
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
