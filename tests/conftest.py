@@ -114,8 +114,13 @@ def training_config(temp_dir):
 
 @pytest.fixture
 def device():
-    """Get available device."""
-    return 'cuda' if torch.cuda.is_available() else 'cpu'
+    """Get available device (cuda, mps, or cpu)."""
+    if torch.cuda.is_available():
+        return 'cuda'
+    elif hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
+        return 'mps'
+    else:
+        return 'cpu'
 
 
 @pytest.fixture(autouse=True)

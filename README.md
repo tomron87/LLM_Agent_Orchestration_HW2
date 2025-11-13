@@ -1200,43 +1200,58 @@ If you use this code or methodology in your research, please cite:
 
 ### Academic References
 
-1. **LSTM Networks**: Hochreiter & Schmidhuber (1997). "Long Short-Term Memory." Neural Computation.
+1. **Hochreiter, S., & Schmidhuber, J. (1997)**. Long short-term memory. *Neural computation*, 9(8), 1735-1780.
+   DOI: [10.1162/neco.1997.9.8.1735](https://doi.org/10.1162/neco.1997.9.8.1735)
 
-2. **Signal Processing**: Oppenheim & Schafer (2009). "Discrete-Time Signal Processing."
+2. **Oppenheim, A. V., & Schafer, R. W. (2009)**. *Discrete-Time Signal Processing* (3rd ed.). Prentice Hall.
+   ISBN: 978-0131988422
 
-3. **Deep Learning**: Goodfellow et al. (2016). "Deep Learning." MIT Press.
+3. **Goodfellow, I., Bengio, Y., & Courville, A. (2016)**. *Deep Learning*. MIT Press.
+   Available: http://www.deeplearningbook.org
+
+4. **Paszke, A., Gross, S., Massa, F., et al. (2019)**. PyTorch: An Imperative Style, High-Performance Deep Learning Library. In *Advances in Neural Information Processing Systems* 32 (NeurIPS 2019).
+   arXiv: [1912.01703](https://arxiv.org/abs/1912.01703)
+
+5. **Sutskever, I., Vinyals, O., & Le, Q. V. (2014)**. Sequence to sequence learning with neural networks. In *Advances in Neural Information Processing Systems* 27 (NIPS 2014).
+   arXiv: [1409.3215](https://arxiv.org/abs/1409.3215)
+
+6. **Cho, K., Van Merriënboer, B., Gulcehre, C., et al. (2014)**. Learning Phrase Representations using RNN Encoder-Decoder for Statistical Machine Translation. In *EMNLP 2014*.
+   arXiv: [1406.1078](https://arxiv.org/abs/1406.1078)
+   DOI: [10.3115/v1/D14-1179](https://doi.org/10.3115/v1/D14-1179)
 
 ### Technical References
 
-4. **PyTorch Documentation**: https://pytorch.org/docs/
+7. **PyTorch Documentation**: https://pytorch.org/docs/stable/index.html
 
-5. **NumPy Documentation**: https://numpy.org/doc/
+8. **NumPy Documentation**: https://numpy.org/doc/stable/
 
-6. **Software Quality Standards**: ISO/IEC 25010:2011
+9. **Software Quality Standards**: ISO/IEC 25010:2011 - Systems and software Quality Requirements and Evaluation (SQuaRE)
 
 ### Project Documentation
 
-7. **[Product Requirements Document](documentation/PRD.md)**
+10. **[Product Requirements Document](documentation/PRD.md)** - Project scope, requirements, and success criteria
 
-8. **[Technical Specification](documentation/TECHNICAL_SPECIFICATION.md)**
+11. **[Technical Specification](documentation/TECHNICAL_SPECIFICATION.md)** - Detailed technical design
 
-9. **[Implementation Guide](documentation/IMPLEMENTATION_GUIDE.md)**
+12. **[Implementation Guide](documentation/IMPLEMENTATION_GUIDE.md)** - Step-by-step implementation details
 
-10. **[L>1 Justification](documentation/L_JUSTIFICATION.md)**
+13. **[L>1 Justification](documentation/L_JUSTIFICATION.md)** - Rationale for sequence length choices
 
-11. **[Development Journey](documentation/DEVELOPMENT_JOURNEY.md)**
+14. **[Development Journey](documentation/DEVELOPMENT_JOURNEY.md)** - Complete development timeline and decisions
 
-12. **[Project Status](documentation/status.md)**
+15. **[Project Status](documentation/status.md)** - Current project status and roadmap
 
-13. **[Session History](documentation/prompts.md)**
+16. **[Session History](documentation/prompts.md)** - Complete prompt engineering log (1,122 lines)
 
-14. **[AI Context Guide](documentation/CLAUDE.md)**
+17. **[AI Context Guide](documentation/CLAUDE.md)** - Guide for AI assistants working on this project
+
+18. **[Architecture Decision Records](documentation/ADR/)** - Formal ADRs documenting key design decisions
 
 ### Assignment Materials
 
-15. **Assignment Specification**: L2-homework.pdf (provided by instructor)
+19. **Assignment Specification**: L2-homework.pdf (provided by instructor)
 
-16. **Submission Guidelines**: software_submission_guidelines.pdf
+20. **Submission Guidelines**: software_submission_guidelines.pdf
 
 ---
 

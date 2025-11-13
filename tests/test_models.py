@@ -196,6 +196,9 @@ class TestSequenceLSTM:
 
     def test_statelessness(self, sequence_model):
         """Test that sequence model doesn't maintain state between batches."""
+        # Put model in eval mode to disable dropout for deterministic testing
+        sequence_model.eval()
+
         torch.manual_seed(42)
         seq1 = torch.randn(4, 10, 5)
         seq2 = torch.randn(4, 10, 5)
