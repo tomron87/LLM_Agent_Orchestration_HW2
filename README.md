@@ -40,7 +40,7 @@
 
 ---
 
-## 🎯 Executive Summary
+## Executive Summary
 
 This project implements a state-of-the-art LSTM neural network system for extracting individual pure frequency components from noisy mixed signals. The system successfully solves a challenging signal processing problem through deep learning, achieving excellent performance metrics (MSE < 0.07) through innovative phase scaling techniques.
 
@@ -59,7 +59,7 @@ The project overcame a critical challenge where per-sample phase randomization m
 
 ---
 
-## 🔬 Problem Statement
+## Problem Statement
 
 ### Challenge
 
@@ -89,7 +89,7 @@ Target:     Targetᵢ(t) = sin(2π · fᵢ · t)
 
 ---
 
-## ✨ Key Features
+## Key Features
 
 ### Dual LSTM Architectures
 
@@ -128,7 +128,7 @@ Target:     Targetᵢ(t) = sin(2π · fᵢ · t)
 
 ---
 
-## 📊 Results & Achievements
+## Results & Achievements
 
 ### Performance Metrics
 
@@ -256,7 +256,7 @@ Freq     Hz       Train MSE    Test MSE     Correlation
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 HW2/
@@ -337,7 +337,7 @@ Following software engineering best practices ([ISO/IEC 25010](https://www.iso.o
 
 ---
 
-## 🚀 Installation
+## Installation
 
 ### Prerequisites
 
@@ -405,7 +405,7 @@ pytest tests/ -v
 
 ---
 
-## 🎬 Quick Start
+## Quick Start
 
 ### Option 1: Quick Test (5 minutes)
 
@@ -454,7 +454,7 @@ The notebook includes:
 
 ---
 
-## 📖 Usage Guide
+## Usage Guide
 
 ### Command-Line Interface
 
@@ -575,7 +575,7 @@ outputs/
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 This project includes comprehensive documentation following industry best practices:
 
@@ -639,7 +639,7 @@ This project includes comprehensive documentation following industry best practi
 
 ---
 
-## 🏗️ Technical Architecture
+## Technical Architecture
 
 ### System Overview
 
@@ -735,7 +735,7 @@ See [Technical Specification](documentation/TECHNICAL_SPECIFICATION.md) for comp
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ### Comprehensive Test Suite
 
@@ -802,7 +802,7 @@ Following [ISO/IEC 25010](https://www.iso.org/standard/35733.html) quality stand
 
 ---
 
-## 🔬 Research & Analysis
+## Research & Analysis
 
 ### Parameter Sensitivity Analysis
 
@@ -857,7 +857,7 @@ See [Development Journey](documentation/DEVELOPMENT_JOURNEY.md) for complete ana
 
 ---
 
-## 📖 Development Journey
+## Development Journey
 
 ### The Story Behind This Project
 
@@ -895,7 +895,7 @@ Read the complete story in [Development Journey](documentation/DEVELOPMENT_JOURN
 
 ---
 
-## ⚙️ Configuration Management
+## Configuration Management
 
 ### Configuration Files
 
@@ -956,7 +956,7 @@ All random seeds are fixed for deterministic results.
 
 ---
 
-## 🎯 Quality Assurance
+## Quality Assurance
 
 ### Code Quality Standards
 
@@ -995,7 +995,7 @@ Following industry best practices:
 
 ---
 
-## 🔄 Extensibility & Maintenance
+## Extensibility & Maintenance
 
 ### Plugin Architecture
 
@@ -1049,7 +1049,7 @@ Potential improvements for future work:
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 ### Development Setup
 
@@ -1080,16 +1080,20 @@ All contributions must:
 
 ---
 
-## 📜 License & Attribution
+## License & Attribution
 
 ### License
 
 This project is developed for educational purposes as part of M.Sc. Data Science coursework.
 
 **Course:** LLMs and Multi-Agent Orchestration
+
 **Instructor:** Dr. Segal Yoram
+
 **Institution:** M.Sc. Data Science Program
+
 **Date:** November 2025
+
 **Assignment:** Homework 2 - LSTM Frequency Extraction
 
 ### Authors
@@ -1128,7 +1132,7 @@ If you use this code or methodology in your research, please cite:
 
 ---
 
-## 📚 References
+## References
 
 ### Academic References
 
@@ -1172,7 +1176,7 @@ If you use this code or methodology in your research, please cite:
 
 ---
 
-## 🎓 Educational Value
+## Educational Value
 
 This project demonstrates expertise in:
 
@@ -1199,7 +1203,7 @@ This project demonstrates expertise in:
 
 ---
 
-## 📞 Support & Contact
+## Support & Contact
 
 ### Getting Help
 
@@ -1252,7 +1256,7 @@ set MPLBACKEND=TkAgg
 
 ---
 
-## 🎉 Final Notes
+## Final Notes
 
 This project represents the culmination of systematic problem-solving, mathematical analysis, and software engineering best practices. The journey from initial failure (MSE 0.5) to excellent success (MSE 0.062) demonstrates the importance of:
 
