@@ -24,6 +24,10 @@ import time
 from pathlib import Path
 
 from .config import TrainingConfig
+from src.utils.logger import setup_logger
+
+# Module logger
+logger = setup_logger(__name__)
 
 
 class EarlyStopping:

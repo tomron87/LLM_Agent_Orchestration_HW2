@@ -1,0 +1,109 @@
+# LSTM Frequency Extraction - Configuration
+# ===========================================
+# This file contains all hyperparameters and settings for training.
+# Modify values here instead of hardcoding in source files.
+
+# Data Generation Settings
+data:
+  frequencies: [1.0, 3.0, 5.0, 7.0]  # Hz
+  sampling_rate: 1000                # Hz
+  duration: 10.0                      # seconds
+  train_seed: 1                       # Random seed for training data
+  test_seed: 2                        # Random seed for test data
+  phase_scale: 0.01                   # Critical parameter: 0.01 recommended for learnable task
+
+# Model Architecture
+model:
+  type: "sequence"                    # "stateful" (L=1) or "sequence" (L>1)
+  hidden_size: 128                    # LSTM hidden dimension
+  num_layers: 2                       # Number of LSTM layers
+  sequence_length: 50                 # L value (1 for stateful, 50-100 for sequence)
+  dropout: 0.2                        # Dropout probability (0.0 to disable)
+
+# Training Settings
+training:
+  batch_size: 16                      # Training batch size
+  learning_rate: 0.01                 # Initial learning rate
+  num_epochs: 30                      # Maximum training epochs
+  optimizer: "adam"                   # "adam" or "sgd"
+  weight_decay: 0.0001                # L2 regularization
+  gradient_clip_norm: 1.0             # Maximum gradient norm
+
+# Data Split
+data_split:
+  val_split: 0.2                      # Validation split (0.2 = 20%)
+  shuffle: true                       # Shuffle training data
+
+# Early Stopping
+early_stopping:
+  enabled: true                       # Enable early stopping
+  patience: 10                        # Epochs with no improvement before stopping
+  min_delta: 0.0001                   # Minimum change to qualify as improvement
+
+# Checkpointing
+checkpointing:
+  enabled: true                       # Save model checkpoints
+  save_best_only: true                # Only save when validation improves
+  checkpoint_dir: "outputs/models"    # Directory for saving models
+
+# Logging
+logging:
+  level: "INFO"                       # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  console_output: true                # Print logs to console
+  file_output: true                   # Save logs to file
+  log_dir: "outputs/logs"             # Log file directory
+
+# Visualization
+visualization:
+  enabled: true                       # Generate plots
+  output_dir: "outputs/figures"       # Directory for saving figures
+  dpi: 300                            # Figure resolution
+  format: "png"                       # File format (png, pdf, svg)
+
+# Reproducibility
+reproducibility:
+  seed: 42                            # Global random seed
+  deterministic: true                 # Use deterministic algorithms (slower but reproducible)
+
+# Device Settings
+device:
+  auto_detect: true                   # Automatically detect GPU/MPS
+  preferred: "cuda"                   # "cuda", "mps", or "cpu"
+  allow_fallback: true                # Fall back to CPU if preferred unavailable
+
+# Performance
+performance:
+  num_workers: 4                      # DataLoader worker processes (0 = main process)
+  pin_memory: true                    # Pin memory for faster GPU transfer
+
+# Experiment Tracking (Optional)
+experiment:
+  name: "lstm_frequency_extraction"   # Experiment name
+  tags: ["lstm", "signal_processing"] # Tags for organization
+  notes: "Phase scaling = 0.01"       # Additional notes
+
+# === Predefined Configurations ===
+# Uncomment to use preset configurations
+
+# Quick Test (5 minutes)
+# training:
+#   num_epochs: 5
+#   batch_size: 32
+# data:
+#   duration: 5.0
+
+# L=1 Stateful Configuration
+# model:
+#   type: "stateful"
+#   sequence_length: 1
+#   hidden_size: 64
+#   num_layers: 1
+#   dropout: 0.0
+# training:
+#   batch_size: 1
+
+# L=100 Overfitting Demo
+# model:
+#   sequence_length: 100
+#   hidden_size: 128
+# This configuration will overfit (Gen ratio: 3.43)

@@ -28,5 +28,10 @@ pillow>=10.0.0
 
 # Development Tools (Optional)
 pytest>=7.4.0
+pytest-cov>=4.1.0
 black>=23.0.0
 flake8>=6.0.0
+
+# Configuration Management
+pyyaml>=6.0.0
+python-dotenv>=1.0.0

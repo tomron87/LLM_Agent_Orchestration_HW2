@@ -16,6 +16,10 @@ import numpy as np
 from typing import List, Tuple, Dict
 import os
 import pickle
+from src.utils.logger import setup_logger
+
+# Module logger
+logger = setup_logger(__name__)
 
 
 class SignalGenerator:
@@ -53,20 +57,58 @@ class SignalGenerator:
                         0.1 = moderate noise
                         1.0 = full noise (impossible to learn)
         """
+        # Validate parameters with detailed error messages
+        if not isinstance(frequencies, (list, tuple)):
+            raise TypeError(
+                f"frequencies must be a list or tuple, got {type(frequencies).__name__}"
+            )
+        if len(frequencies) != 4:
+            raise ValueError(
+                f"Exactly 4 frequencies required, got {len(frequencies)}. "
+                f"Assignment specifies frequencies: [1, 3, 5, 7] Hz"
+            )
+        if not all(isinstance(f, (int, float)) and f > 0 for f in frequencies):
+            raise ValueError(
+                f"All frequencies must be positive numbers. Got: {frequencies}"
+            )
+        if not isinstance(fs, (int, float)) or fs <= 0:
+            raise ValueError(
+                f"Sampling rate (fs) must be a positive number, got: {fs}"
+            )
+        if not isinstance(duration, (int, float)) or duration <= 0:
+            raise ValueError(
+                f"Duration must be a positive number, got: {duration}"
+            )
+        if not isinstance(phase_scale, (int, float)) or not (0 <= phase_scale <= 1):
+            raise ValueError(
+                f"Phase scale must be between 0 and 1, got: {phase_scale}. "
+                f"Recommended: 0.01 for learnable task"
+            )
+        if not isinstance(seed, int):
+            raise TypeError(
+                f"Seed must be an integer, got {type(seed).__name__}"
+            )
+
         self.frequencies = frequencies
         self.fs = fs
         self.duration = duration
         self.seed = seed
         self.phase_scale = phase_scale
         self.num_samples = int(fs * duration)
-        self.rng = np.random.RandomState(seed)
 
-        # Validate parameters
-        assert len(frequencies) == 4, "Exactly 4 frequencies required"
-        assert all(f > 0 for f in frequencies), "Frequencies must be positive"
-        assert fs > 0, "Sampling rate must be positive"
-        assert duration > 0, "Duration must be positive"
-        assert 0 <= phase_scale <= 1, "Phase scale must be between 0 and 1"
+        try:
+            self.rng = np.random.RandomState(seed)
+        except Exception as e:
+            logger.error(f"Failed to initialize random state with seed {seed}")
+            raise RuntimeError(
+                f"Could not create random number generator: {e}"
+            ) from e
+
+        logger.info(
+            f"SignalGenerator initialized: freqs={frequencies} Hz, "
+            f"fs={fs} Hz, duration={duration}s, samples={self.num_samples}, "
+            f"seed={seed}, phase_scale={phase_scale}"
+        )
 
     def generate_time_array(self) -> np.ndarray:
         """
@@ -100,21 +142,46 @@ class SignalGenerator:
 
         Returns:
             noisy_signal: Noisy sinusoid array of shape (num_samples,)
+
+        Raises:
+            ValueError: If freq_idx is out of range or t is invalid
+            RuntimeError: If signal generation fails
         """
-        freq = self.frequencies[freq_idx]
+        # Validate inputs
+        if not isinstance(freq_idx, int) or not (0 <= freq_idx < len(self.frequencies)):
+            raise ValueError(
+                f"freq_idx must be an integer in range [0, {len(self.frequencies)-1}], "
+                f"got: {freq_idx}"
+            )
+        if not isinstance(t, np.ndarray):
+            raise TypeError(f"Time array must be numpy array, got {type(t).__name__}")
+        if t.size == 0:
+            raise ValueError("Time array cannot be empty")
 
-        # Random amplitude for EACH sample
-        A = self.rng.uniform(0.8, 1.2, size=len(t))
+        try:
+            freq = self.frequencies[freq_idx]
+            logger.debug(f"Generating noisy component for freq_idx={freq_idx} ({freq} Hz)")
 
-        # Random phase for EACH sample - sampled from Uniform(0, 2π) then scaled
-        # This still "changes at each sample" but with controlled magnitude
-        phi_raw = self.rng.uniform(0, 2 * np.pi, size=len(t))
-        phi = self.phase_scale * phi_raw
+            # Random amplitude for EACH sample
+            A = self.rng.uniform(0.8, 1.2, size=len(t))
 
-        # Noisy sinusoid
-        noisy_signal = A * np.sin(2 * np.pi * freq * t + phi)
+            # Random phase for EACH sample - sampled from Uniform(0, 2π) then scaled
+            # This still "changes at each sample" but with controlled magnitude
+            phi_raw = self.rng.uniform(0, 2 * np.pi, size=len(t))
+            phi = self.phase_scale * phi_raw
 
-        return noisy_signal
+            # Noisy sinusoid
+            noisy_signal = A * np.sin(2 * np.pi * freq * t + phi)
+
+            return noisy_signal
+        except Exception as e:
+            logger.error(
+                f"Failed to generate noisy component for freq_idx={freq_idx}: {e}",
+                exc_info=True
+            )
+            raise RuntimeError(
+                f"Signal generation failed for frequency index {freq_idx}: {e}"
+            ) from e
 
     def generate_mixed_signal(self) -> Tuple[np.ndarray, np.ndarray]:
         """
