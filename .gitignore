@@ -61,6 +61,12 @@ outputs/*.log
 .coverage
 htmlcov/
 
+# Claude Code and evaluation reports
+.claude/
+COVERAGE_REPORT.md
+documentation/PROJECT_EVALUATION_REPORT.md
+Assignment_2_Cover_Page.pdf
+
 # macOS
 .DS_Store
 .AppleDouble
